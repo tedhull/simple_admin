@@ -17,17 +17,17 @@ class DashboardController extends AbstractDashboardController
 {
     public function index(): Response
     {
-        return parent::index();
+        return $this->redirect('/user');
     }
 
     public function configureDashboard(): Dashboard
     {
-        return Dashboard::new()
-            ->setTitle('Simple Admin');
+        return Dashboard::new()->disableDarkMode()->setTitle('Simple CRUD');
     }
 
     public function configureMenuItems(): iterable
     {
+        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Users', 'fas fa-list', User::class);
     }
 }

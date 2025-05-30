@@ -1,76 +1,78 @@
-{# templates/registration/register.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}Register{% endblock %}
 
 {% block body %}
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Register</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 h-screen flex justify-center items-center">
-    <!-- Wrapper -->
-    <div class="flex w-full h-screen">
-        <!-- Left: Image -->
-        <div class="w-1/2 h-full hidden lg:block">
-            <img src="https://placehold.co/800x/667fff/ffffff.png?text=Register+Image&font=Montserrat"
-                 alt="Placeholder Image"
-                 class="object-cover w-full h-full">
-        </div>
+<script src="https://cdn.tailwindcss.com"></script>
 
-        <!-- Right: Registration Form -->
-        <div class="flex items-start lg:pt-40 md:pt-32 sm:pt-20 pt-16 w-full lg:w-1/2">
-            <div class="w-full px-8">
-                <h1 class="text-2xl font-semibold mb-4">Create an Account</h1>
+<!-- component -->
+<div class="bg-gray-100 flex justify-center items-center h-screen w-screen overflow-hidden fixed inset-0">
+    <!-- Left: Image -->
+    <div class="w-1/2 h-full hidden lg:block">
+        <img src="https://placehold.co/800x/667fff/ffffff.png?text=Your+Image&font=Montserrat"
+             alt="Placeholder Image"
+             class="object-cover w-full h-full">
+    </div>
 
-                {{ form_start(registrationForm) }}
+    <!-- Right: Registration Form -->
+    <div class="lg:p-36 md:p-52 sm:p-20 p-8 w-full lg:w-1/2 h-full flex flex-col justify-center">
+        <div class="max-w-md mx-auto w-full">
+            <h1 class="text-2xl font-semibold mb-4">Register</h1>
 
-                {# Display form-wide errors #}
-                {% if registrationForm.vars.errors|length > 0 %}
-                    <div class="mb-4 text-red-600 bg-red-100 border border-red-300 p-3 rounded">
-                        {{ form_errors(registrationForm) }}
-                    </div>
-                {% endif %}
+            {% for flash_error in app.flashes('verify_email_error') %}
+                <div class="mb-4 text-red-600 bg-red-100 border border-red-300 p-3 rounded">
+                    {{ flash_error }}
+                </div>
+            {% endfor %}
 
-                <!-- Email -->
+            <form action="{{ path('app_register') }}" method="POST">
+                <!-- Email Input -->
                 <div class="mb-4">
-                    {{ form_label(registrationForm.email, null, {'label_attr': {'class': 'block text-gray-600'}}) }}
-                    {{ form_widget(registrationForm.email, {'attr': {'class': 'w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500'}}) }}
-                    {{ form_errors(registrationForm.email) }}
+                    <label for="registration_form_email" class="block text-gray-600">Email</label>
+                    <input type="email"
+                           name="registration_form[email]"
+                           id="registration_form_email"
+                           class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                           autocomplete="email"
+                           required
+                           autofocus>
                 </div>
 
-                <!-- Password -->
+                <!-- Password Input -->
                 <div class="mb-4">
-                    {{ form_label(registrationForm.plainPassword, 'Password', {'label_attr': {'class': 'block text-gray-600'}}) }}
-                    {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500'}}) }}
-                    {{ form_errors(registrationForm.plainPassword) }}
-                </div>
-                <!-- Agree to Terms -->
-                <div class="mb-4">
-                    <label class="inline-flex items-center">
-                        {{ form_widget(registrationForm.agreeTerms) }}
-                        <span class="ml-2 text-gray-600">I agree to the terms and conditions</span>
-                    </label>
-                    {{ form_errors(registrationForm.agreeTerms) }}
+                    <label for="registration_form_plainPassword" class="block text-gray-600">Password</label>
+                    <input type="password"
+                           name="registration_form[plainPassword]"
+                           id="registration_form_plainPassword"
+                           class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                           autocomplete="new-password"
+                           required>
                 </div>
 
-                <!-- Submit Button -->
+                <!-- CSRF Token -->
+                <input type="hidden" name="registration_form[_token]" value="{{ csrf_token('registration_form') }}">
+
+                <!-- Register Button -->
                 <button type="submit"
                         class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full">
                     Register
                 </button>
+            </form>
 
-                {{ form_end(registrationForm) }}
-
-                <!-- Already have an account? -->
-                <div class="mt-6 text-blue-500 text-center">
-                    <a href="{{ path('app_login') }}" class="hover:underline">Already have an account? Login</a>
-                </div>
+            <!-- Sign in Link -->
+            <div class="mt-6 text-blue-500 text-center">
+                <a href="{{ path('app_login') }}" class="hover:underline">Already have an account? Sign in here</a>
             </div>
         </div>
     </div>
-</body>
-</html>
+</div>
+
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+</style>
 {% endblock %}
