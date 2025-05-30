@@ -1,62 +1,74 @@
-{# templates/security/login.html.twig #}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 h-screen flex justify-center items-center">
-<!-- Wrapper -->
-<div class="flex w-full h-screen">
-    <!-- Left: Image -->
-    <div class="w-1/2 h-full hidden lg:block">
-        <img src="https://placehold.co/800x/667fff/ffffff.png?text=Your+Image&font=Montserrat"
-             alt="Placeholder Image"
-             class="object-cover w-full h-full">
-    </div>
+{% extends 'base.html.twig' %}
 
-    <!-- Right: Login Form -->
-    <div class="lg:p-36 md:p-52 sm:p-20 p-8 w-full lg:w-1/2 mt-40">
-        <h1 class="text-2xl font-semibold mb-4">Login</h1>
+{% block title %}Log in!{% endblock %}
 
-        {% if error %}
-            <div class="mb-4 text-red-600 bg-red-100 border border-red-300 p-3 rounded">
-                {{ error.messageKey|trans(error.messageData, 'security') }}
-            </div>
-        {% endif %}
+{% block body %}
+    <head>
+        <meta charset="UTF-8">
+        <title>Register</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
 
-        <form action="{{ path('app_login') }}" method="post">
-            <!-- Username Input -->
-            <div class="mb-4">
-                <label for="username" class="block text-gray-600">Username</label>
-                <input type="text" id="username" name="_username"
-                       value="{{ last_username }}"
-                       class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                       autocomplete="username" required autofocus>
-            </div>
+    <div class="bg-gray-100 h-screen flex justify-center items-center">
 
-            <!-- Password Input -->
-            <div class="mb-4">
-                <label for="password" class="block text-gray-600">Password</label>
-                <input type="password" id="password" name="_password"
-                       class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                       autocomplete="current-password" required>
-            </div>
 
-            <!-- Login Button -->
-            <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
-            <button type="submit"
-                    class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full">
-                Login
-            </button>
+        <form method="post">
+
+            {% if app.user %}
+                <div class="mb-3">
+                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                </div>
+            {% endif %}
+
+            <!-- component -->
+            <div class="bg-gray-100 flex justify-center items-center h-screen">
+
+                <!-- Wrapper -->
+                <div class="flex w-full h-screen">
+                    <!-- Left: Image -->
+                    <div class="w-1/2 h-full hidden lg:block">
+                        <img src="https://placehold.co/800x/667fff/ffffff.png?text=Your+Image&font=Montserrat"
+                             alt="Placeholder Image"
+                             class="object-cover w-full h-full">
+                    </div>
+                    <!-- Right: Login Form -->
+                    <div class="lg:p-36 md:p-52 sm:20 p-8 w-full lg:w-1/2">
+                        <h1 class="text-2xl font-semibold mb-4">Login</h1>
+
+                        {% if error %}
+                            <div class="mb-4 text-red-600 bg-red-100 border border-red-300 p-3 rounded">
+                                {{ error.messageKey|trans(error.messageData, 'security') }}
+                            </div>
+                        {% endif %}
+                        <!-- Username Input -->
+                        <div class="mb-4">
+                            <label for="username" class="block text-gray-600">Email</label>
+                            <input type="email" value="{{ last_username }}" name="_username" id="username"
+                                   class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                                   autocomplete="off">
+                        </div>
+                        <!-- Password Input -->
+                        <div class="mb-4">
+                            <label for="password" class="block text-gray-600">Password</label>
+                            <input type="password" id="password" name="_password"
+                                   class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                                   autocomplete="off">
+                        </div>
+                        <input type="hidden" name="_csrf_token" data-controller="csrf-protection"
+                               value="{{ csrf_token('authenticate') }}">
+                        <!-- Login Button -->
+                        <button type="submit"
+                                class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full">
+                            Login
+                        </button>
+
+                        <!-- Sign up  Link -->
+                        <div class="mt-6 text-blue-500 text-center">
+                            <a href="/register" class="hover:underline">Sign up Here</a>
+                        </div>
+                    </div>
+                </div>
         </form>
-
-        <!-- Sign up Link -->
-        <div class="mt-6 text-blue-500 text-center">
-            <a href="{{ path('app_register') }}" class="hover:underline">Sign up Here</a>
-        </div>
     </div>
-</div>
-</body>
-</html>
+
+{% endblock %}
