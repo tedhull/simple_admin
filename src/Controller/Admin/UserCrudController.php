@@ -67,27 +67,107 @@ class UserCrudController extends AbstractCrudController
 
     public function banSelectedUsers(Request $request)
     {
-        $users = $request->request->all('batchActionEntityIds');
+        $userIds = $request->request->all('batchActionEntityIds');
         $entityManager = $this->container->get('doctrine')->getManagerForClass(User::class);
-        foreach ($users as $user) {
-            $user = $entityManager->getRepository(User::class)->find($user);
-            $user->setStatus('BANNED');
-            $entityManager->persist($user);
+
+        $bannedCount = 0;
+        $alreadyBannedCount = 0;
+        $bannedUsernames = [];
+
+        foreach ($userIds as $userId) {
+            $user = $entityManager->getRepository(User::class)->find($userId);
+
+            if ($user) {
+                if ($user->getStatus() !== 'BANNED') {
+                    $user->setStatus('BANNED');
+                    $entityManager->persist($user);
+                    $bannedCount++;
+                    $bannedUsernames[] = $user->getUsername();
+                } else {
+                    $alreadyBannedCount++;
+                }
+            }
         }
+
         $entityManager->flush();
+
+        // Add flash messages based on results
+        if ($bannedCount > 0) {
+            $message = sprintf(
+                '%d user%s successfully banned: %s',
+                $bannedCount,
+                $bannedCount > 1 ? 's' : '',
+                implode(', ', $bannedUsernames)
+            );
+            $this->addFlash('success', $message);
+        }
+
+        if ($alreadyBannedCount > 0) {
+            $this->addFlash('warning', sprintf(
+                '%d user%s %s already banned',
+                $alreadyBannedCount,
+                $alreadyBannedCount > 1 ? 's' : '',
+                $alreadyBannedCount > 1 ? 'were' : 'was'
+            ));
+        }
+
+        if ($bannedCount === 0 && $alreadyBannedCount === 0) {
+            $this->addFlash('error', 'No users were processed');
+        }
+
         return $this->redirectToRoute('admin_user_index');
     }
 
     public function unbanSelectedUsers(Request $request)
     {
-        $users = $request->request->all('batchActionEntityIds');
+        $userIds = $request->request->all('batchActionEntityIds');
         $entityManager = $this->container->get('doctrine')->getManagerForClass(User::class);
-        foreach ($users as $user) {
-            $user = $entityManager->getRepository(User::class)->find($user);
-            $user->setStatus('ACTIVE');
-            $entityManager->persist($user);
+
+        $unbannedCount = 0;
+        $alreadyActiveCount = 0;
+        $unbannedUsernames = [];
+
+        foreach ($userIds as $userId) {
+            $user = $entityManager->getRepository(User::class)->find($userId);
+
+            if ($user) {
+                if ($user->getStatus() !== 'ACTIVE') {
+                    $user->setStatus('ACTIVE');
+                    $entityManager->persist($user);
+                    $unbannedCount++;
+                    $unbannedUsernames[] = $user->getUsername();
+                } else {
+                    $alreadyActiveCount++;
+                }
+            }
         }
+
         $entityManager->flush();
+
+        // Add flash messages based on results
+        if ($unbannedCount > 0) {
+            $message = sprintf(
+                '%d user%s successfully unbanned: %s',
+                $unbannedCount,
+                $unbannedCount > 1 ? 's' : '',
+                implode(', ', $unbannedUsernames)
+            );
+            $this->addFlash('success', $message);
+        }
+
+        if ($alreadyActiveCount > 0) {
+            $this->addFlash('warning', sprintf(
+                '%d user%s %s already active',
+                $alreadyActiveCount,
+                $alreadyActiveCount > 1 ? 's' : '',
+                $alreadyActiveCount > 1 ? 'were' : 'was'
+            ));
+        }
+
+        if ($unbannedCount === 0 && $alreadyActiveCount === 0) {
+            $this->addFlash('error', 'No users were processed');
+        }
+
         return $this->redirectToRoute('admin_user_index');
     }
 }
