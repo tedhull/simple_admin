@@ -12,11 +12,29 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 class UserCrudController extends AbstractCrudController
 {
+    private $session;
+
+    public function __construct(private RequestStack $requestStack)
+    {
+        $this->session = $this->requestStack->getSession();
+    }
+
+    public function index(AdminContext $context)
+    {
+        if ($this->session->get('is_logged_in') == null || !$this->session->get('is_logged_in')) {
+            return $this->redirect('/login');
+        }
+        return parent::index($context);
+    }
+
+
     public static function getEntityFqcn(): string
     {
         return User::class;
@@ -38,6 +56,7 @@ class UserCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+
         return [
             textField::new('username'),
             emailField::new('email'),
