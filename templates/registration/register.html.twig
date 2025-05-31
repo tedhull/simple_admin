@@ -3,76 +3,86 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-<script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 
-<!-- component -->
-<div class="bg-gray-100 flex justify-center items-center h-screen w-screen overflow-hidden fixed inset-0">
-    <!-- Left: Image -->
-    <div class="w-1/2 h-full hidden lg:block">
-        <img src="https://placehold.co/800x/667fff/ffffff.png?text=Your+Image&font=Montserrat"
-             alt="Placeholder Image"
-             class="object-cover w-full h-full">
-    </div>
+    <!-- component -->
+    <div class="bg-gray-100 flex justify-center items-center h-screen w-screen overflow-hidden fixed inset-0">
+        <!-- Left: Image -->
+        <div class="w-1/2 h-full hidden lg:block">
+            <img src="https://placehold.co/800x/667fff/ffffff.png?text=Your+Image&font=Montserrat"
+                 alt="Placeholder Image"
+                 class="object-cover w-full h-full">
+        </div>
 
-    <!-- Right: Registration Form -->
-    <div class="lg:p-36 md:p-52 sm:p-20 p-8 w-full lg:w-1/2 h-full flex flex-col justify-center">
-        <div class="max-w-md mx-auto w-full">
-            <h1 class="text-2xl font-semibold mb-4">Register</h1>
+        <!-- Right: Registration Form -->
+        <div class="lg:p-36 md:p-52 sm:p-20 p-8 w-full lg:w-1/2 h-full flex flex-col justify-center">
+            <div class="max-w-md mx-auto w-full">
+                <h1 class="text-2xl font-semibold mb-4">Register</h1>
 
-            {% for flash_error in app.flashes('verify_email_error') %}
-                <div class="mb-4 text-red-600 bg-red-100 border border-red-300 p-3 rounded">
-                    {{ flash_error }}
+                {% for flash_error in app.flashes('verify_email_error') %}
+                    <div class="mb-4 text-red-600 bg-red-100 border border-red-300 p-3 rounded">
+                        {{ flash_error }}
+                    </div>
+                {% endfor %}
+
+                <form action="{{ path('app_register') }}" method="POST">
+                    <!-- Username Input -->
+                    <div class="mb-4">
+                        <label for="registration_form_username" class="block text-gray-600">Username</label>
+                        <input type="text"
+                               name="registration_form[username]"
+                               id="registration_form_username"
+                               class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                               required
+                               autofocus>
+                    </div>
+                    <!-- Email Input -->
+                    <div class="mb-4">
+                        <label for="registration_form_email" class="block text-gray-600">Email</label>
+                        <input type="email"
+                               name="registration_form[email]"
+                               id="registration_form_email"
+                               class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                               autocomplete="email"
+                               required
+                               autofocus>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="mb-4">
+                        <label for="registration_form_plainPassword" class="block text-gray-600">Password</label>
+                        <input type="password"
+                               name="registration_form[plainPassword]"
+                               id="registration_form_plainPassword"
+                               class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
+                               autocomplete="new-password"
+                               required>
+                    </div>
+
+                    <!-- CSRF Token -->
+                    <input type="hidden" name="registration_form[_token]" value="{{ csrf_token('registration_form') }}">
+
+                    <!-- Register Button -->
+                    <button type="submit"
+                            class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full">
+                        Register
+                    </button>
+                </form>
+
+                <!-- Sign in Link -->
+                <div class="mt-6 text-blue-500 text-center">
+                    <a href="{{ path('app_login') }}" class="hover:underline">Already have an account? Sign in here</a>
                 </div>
-            {% endfor %}
-
-            <form action="{{ path('app_register') }}" method="POST">
-                <!-- Email Input -->
-                <div class="mb-4">
-                    <label for="registration_form_email" class="block text-gray-600">Email</label>
-                    <input type="email"
-                           name="registration_form[email]"
-                           id="registration_form_email"
-                           class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                           autocomplete="email"
-                           required
-                           autofocus>
-                </div>
-
-                <!-- Password Input -->
-                <div class="mb-4">
-                    <label for="registration_form_plainPassword" class="block text-gray-600">Password</label>
-                    <input type="password"
-                           name="registration_form[plainPassword]"
-                           id="registration_form_plainPassword"
-                           class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                           autocomplete="new-password"
-                           required>
-                </div>
-
-                <!-- CSRF Token -->
-                <input type="hidden" name="registration_form[_token]" value="{{ csrf_token('registration_form') }}">
-
-                <!-- Register Button -->
-                <button type="submit"
-                        class="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-md py-2 px-4 w-full">
-                    Register
-                </button>
-            </form>
-
-            <!-- Sign in Link -->
-            <div class="mt-6 text-blue-500 text-center">
-                <a href="{{ path('app_login') }}" class="hover:underline">Already have an account? Sign in here</a>
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-    }
-</style>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
 {% endblock %}
