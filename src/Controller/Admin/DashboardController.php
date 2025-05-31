@@ -15,12 +15,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 #[AdminDashboard(routePath: '/', routeName: 'admin')]
 class DashboardController extends AbstractDashboardController
 {
-    private SessionInterface $session;
-
-    public function __construct(private RequestStack $requestStack)
-    {
-        $this->session = $this->requestStack->getSession();
-    }
 
     public function index(): Response
     {
@@ -29,12 +23,11 @@ class DashboardController extends AbstractDashboardController
 
     public function configureDashboard(): Dashboard
     {
-        return Dashboard::new()->disableDarkMode()->setTitle('Simple CRUD');
+        return Dashboard::new()->disableDarkMode()->setTitle('Simple Admin');
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Users', 'fas fa-list', User::class);
     }
 }

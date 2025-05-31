@@ -3,6 +3,7 @@
 namespace App\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -16,6 +17,7 @@ class BannedUserSubscriber implements EventSubscriberInterface
         private readonly TokenStorageInterface         $tokenStorage,
         private readonly AuthorizationCheckerInterface $authChecker,
         private readonly RouterInterface               $router,
+        RequestStack                                   $requestStack
     )
     {
     }
@@ -36,6 +38,9 @@ class BannedUserSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         if (!in_array($request->getMethod(), ['POST', 'PUT', 'DELETE'], true)) {
             return;
+        }
+        if (!$this->authChecker->isGranted('IS_AUTHENTICATED_FULLY') && $request->get('_route') != 'app_register') {
+            $event->setResponse(new RedirectResponse($this->router->generate('app_logout')));
         }
         $token = $this->tokenStorage->getToken();
         if (!$token) {

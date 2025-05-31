@@ -21,6 +21,7 @@ services:
     App\EventSubscriber\LoginSubscriber:
         tags:
             - { name: 'kernel.event_subscriber' }
+    App\EventSubscriber\UserExceptionSubscriber:
 
 
     # add more service definitions when explicit configuration is needed
